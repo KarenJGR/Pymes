@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Image as ImgIcon, Tag, User } from "lucide-react";
 
 export default function ForumForm({ forum, onSave, onCancel }) {
@@ -8,27 +8,40 @@ export default function ForumForm({ forum, onSave, onCancel }) {
       description: "",
       author: "",
       tags: "",
-      image: "",
-      imageFile: null,
+      image: "", // aquí va el base64 completo
     }
   );
+
+  // Cargar imagen existente para preview
+  useEffect(() => {
+    if (forum?.image) {
+      setForm((f) => ({ ...f, image: forum.image }));
+    }
+  }, [forum]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
+    // === IMAGEN ===
     if (files) {
       const file = files[0];
-      setForm({ ...form, imageFile: file });
+      if (!file) return;
 
-      // Preview
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => setForm((f) => ({ ...f, image: reader.result }));
-        reader.readAsDataURL(file);
-      }
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        // reader.result = "data:image/png;base64,AAAFBfj42Pj4..."
+        setForm((prev) => ({
+          ...prev,
+          image: reader.result, // base64 completa
+        }));
+      };
+
+      reader.readAsDataURL(file); // convierte a base64 con prefijo
       return;
     }
 
+    // === CAMPOS NORMAL ===
     setForm({ ...form, [name]: value });
   };
 
@@ -40,7 +53,7 @@ export default function ForumForm({ forum, onSave, onCancel }) {
 
       <div className="space-y-6">
 
-        {/* Título */}
+        {/* TÍTULO */}
         <div>
           <label className="block text-sm font-semibold mb-2">Título</label>
           <input
@@ -52,7 +65,7 @@ export default function ForumForm({ forum, onSave, onCancel }) {
           />
         </div>
 
-        {/* Descripción */}
+        {/* DESCRIPCIÓN */}
         <div>
           <label className="block text-sm font-semibold mb-2">Descripción</label>
           <textarea
@@ -65,18 +78,23 @@ export default function ForumForm({ forum, onSave, onCancel }) {
           />
         </div>
 
-        {/* Imagen destacada */}
+        {/* IMAGEN */}
         <div>
           <label className="block text-sm font-semibold mb-2 flex items-center gap-2">
             <ImgIcon size={18} /> Imagen destacada (opcional)
           </label>
 
-          {form.image && (
+          {/* PREVIEW DE IMAGEN BASE64 */}
+          {form.image ? (
             <img
               src={form.image}
               alt="preview"
               className="w-full h-48 object-cover rounded-2xl shadow mb-3"
             />
+          ) : (
+            <div className="w-full h-48 bg-gray-200 rounded-2xl flex items-center justify-center text-gray-500 mb-3">
+              Sin imagen
+            </div>
           )}
 
           <input
@@ -87,7 +105,7 @@ export default function ForumForm({ forum, onSave, onCancel }) {
           />
         </div>
 
-        {/* Autor y Tags */}
+        {/* AUTOR + TAGS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-semibold mb-2 flex items-center gap-2">
@@ -115,10 +133,9 @@ export default function ForumForm({ forum, onSave, onCancel }) {
             />
           </div>
         </div>
-
       </div>
 
-      {/* Botones */}
+      {/* BOTONES */}
       <div className="flex justify-end gap-4 mt-10">
         <button
           onClick={onCancel}
@@ -126,8 +143,9 @@ export default function ForumForm({ forum, onSave, onCancel }) {
         >
           Cancelar
         </button>
+
         <button
-          onClick={() => onSave(form)}
+          onClick={() => onSave(form)} // aquí se envía el base64 listo
           className="px-6 py-3 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 transition"
         >
           Guardar Foro

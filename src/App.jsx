@@ -2,33 +2,52 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-
-/* import DashboardClient from "./pages/DashboardClient"; */
 import ProtectedRoute from "./routes/ProtectedRoute";
-import { AuthProvider } from "./routes/AuthProvider";
+import { AuthProvider, useAuth } from "./routes/AuthProvider";
+
 import Login from "./pages/login/Login";
 import DashboardAdmin from "./pages/dashboard/DashboardAdmin";
 import Publicaciones from "./pages/dashboard/admin/Publicaciones";
+import DashboardClient from "./pages/dashboard/client/DashboardClient";
+
+// Ruta raíz que redirige según auth y rol
+function HomeRedirect() {
+  const { user } = useAuth(); // suponiendo que tu AuthProvider expone user
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Redirige según rol
+  if (user.role === "admin") return <Navigate to="/admin" replace />;
+  if (user.role === "client") return <Navigate to="/client" replace />;
+
+  // fallback
+  return <Navigate to="/login" replace />;
+}
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* <Route path="/" element={<Home />} /> */}
+          {/* raíz */}
+          <Route path="/" element={<HomeRedirect />} />
 
+          {/* login */}
           <Route path="/login" element={<Login />} />
 
-          {/* Rutas protegidas para Admin */}
+          {/* rutas admin */}
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
             <Route path="/admin" element={<DashboardAdmin />} />
             <Route path="/admin/publicaciones" element={<Publicaciones />} />
           </Route>
 
-          {/* Rutas protegidas para Cliente */}
+          {/* rutas cliente */}
           <Route element={<ProtectedRoute allowedRoles={["client"]} />}>
-            {/*  <Route path="/client" element={<DashboardClient />} /> */}
+            <Route path="/client" element={<DashboardClient />} />
           </Route>
+
           {/* fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

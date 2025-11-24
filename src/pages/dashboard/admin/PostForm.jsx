@@ -135,7 +135,7 @@ export default function UltraModernPostForm({ post, onSave, onCancel }) {
 
         {form.image && (
           <img
-            src={form.image}
+            src={"https://img.freepik.com/foto-gratis/trabajadores-oficina-que-utilizan-graficos-financieros_23-2150408658.jpg?semt=ais_hybrid&w=740&q=80"}
             className="w-full h-52 object-cover rounded-2xl shadow mb-4"
           />
         )}
