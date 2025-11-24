@@ -32,7 +32,7 @@ export default function ForoClient({ forums }) {
               {/* Imagen */}
               {forum.image ? (
                 <img
-                  src={forum.image}
+                  src={forum.image  }
                   alt={forum.title}
                   className="h-40 w-full object-cover"
                 />

@@ -29,7 +29,7 @@ function HomeRedirect() {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter basename="/Pymes" >
         <Routes>
           {/* raíz */}
           <Route path="/" element={<HomeRedirect />} />
