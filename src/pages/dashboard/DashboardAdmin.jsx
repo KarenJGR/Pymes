@@ -49,7 +49,7 @@ export default function DashboardAdmin() {
             <div className="w-72 bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white p-8 flex flex-col shadow-xl">
                 <div className="flex items-center gap-4 mb-10 select-none">
                     <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">P</div>
-                    <h2 className="text-2xl font-bold tracking-wide">Karos Admin</h2>
+                    <h2 className="text-2xl font-bold tracking-wide">Variedades Ruiz</h2>
                 </div>
 
                 <p className="text-gray-300 mb-8 text-sm">

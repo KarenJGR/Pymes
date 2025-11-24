@@ -5,6 +5,7 @@ import InventarioSection from "../../inventarios/InventarioSection";
 import PublicacionesCliente from "./PublicacionesCliente";
 import ForoClient from "../../foros/ForoClient";
 import ClientProductos from "../../inventarios/ClientProductos";
+import { useAuth } from "../../../routes/AuthProvider";
 
 export default function DashboardClient({ onLogout }) {
   // ------------- OBTENER DATOS DESDE LOCALSTORAGE ----------------
@@ -13,19 +14,15 @@ export default function DashboardClient({ onLogout }) {
   const [items] = useState(() => JSON.parse(localStorage.getItem("inventario")) || []);
 
   const [activeSection, setActiveSection] = useState(null);
+  const { logout } = useAuth();
+
 
   return (
     <div className="min-h-screen bg-gray-50 relative">
 
       {/* ------------------------ BOTÓN CERRAR SESIÓN ------------------------ */}
       <button
-        onClick={() => {
-          if (onLogout) onLogout();
-          else {
-            localStorage.clear();
-            window.location.reload(); // fallback
-          }
-        }}
+        onClick={logout}
         className="absolute top-4 right-4 flex items-center gap-2 bg-red-600 text-white px-4 py-2 
                    rounded-lg shadow-md hover:bg-red-700 transition z-50"
       >
