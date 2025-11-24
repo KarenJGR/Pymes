@@ -1,6 +1,6 @@
 // src/App.jsx
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { AuthProvider, useAuth } from "./routes/AuthProvider";
@@ -12,24 +12,22 @@ import DashboardClient from "./pages/dashboard/client/DashboardClient";
 
 // Ruta raíz que redirige según auth y rol
 function HomeRedirect() {
-  const { user } = useAuth(); // suponiendo que tu AuthProvider expone user
+  const { user } = useAuth();
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // Redirige según rol
   if (user.role === "admin") return <Navigate to="/admin" replace />;
   if (user.role === "client") return <Navigate to="/client" replace />;
 
-  // fallback
   return <Navigate to="/login" replace />;
 }
 
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter basename="/Pymes" >
+      <HashRouter basename="/Pymes">
         <Routes>
           {/* raíz */}
           <Route path="/" element={<HomeRedirect />} />
@@ -51,7 +49,7 @@ export default function App() {
           {/* fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </AuthProvider>
   );
 }
